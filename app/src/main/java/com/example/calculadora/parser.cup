@@ -1,0 +1,52 @@
+package com.example.calculadora;
+
+import java_cup.runtime.*;
+import android.util.Log;
+
+parser code{:
+
+    public Parser(Lexer lexer){
+        super(lexer);
+    }
+
+    public String resultado = "";
+
+public void syntax_error(Symbol cur_token) {
+    String mensaje ="Simbolo con error: " + symbl_name_from_id(cur_token.sym) ;
+    
+    if(expected_token_ids().isEmpty()){
+        mensaje += " NO SE ESPERABA OTRO SIMBOLO";
+    }else{
+        mensaje += " NO SE ESPERABA ESE SIMBOLO";
+    }
+
+    Log.d("SNXERR", mensaje);    
+}
+
+:}
+
+terminal NUMEROS, FLOTANTES; 
+terminal SUMA, RESTA, MULTI, DIVISN;
+terminal PAROPN, PARCLS;
+
+non terminal entero, instruccion;
+
+precedence left SUMA, RESTA;
+precedence left MULTI, DIVISN;
+
+
+start with instruccion;
+instruccion ::= entero:result {: resultado = String.valueOf((double)result); 
+                                 Log.d("PS", resultado);
+                                 Log.d("PD", String.valueOf((double)result)); :};
+
+
+entero ::= FLOTANTES:numero {: RESULT = (double)numero; :};
+entero ::= NUMEROS:numero  {: RESULT = (double)numero; :};
+entero ::= entero:num1 SUMA entero:num2 {:  RESULT = (double)num1 + (double)num2; :} 
+        |  entero:num1 RESTA entero:num2 {: RESULT = (double)num1 - (double)num2; :};
+entero ::= entero:num1 MULTI entero:num2 {: RESULT = (double)num1 * (double)num2; :}
+        | entero:num1 DIVISN entero:num2 {: RESULT = (double)num1 / (double)num2; :};
+entero ::= PAROPN entero:num PARCLS {:RESULT = (double)num; :};
+
+
