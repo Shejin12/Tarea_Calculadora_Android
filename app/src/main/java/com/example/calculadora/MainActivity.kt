@@ -1,5 +1,6 @@
 package com.example.calculadora
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -154,8 +155,9 @@ class MainActivity : AppCompatActivity() {
 
             }
             resultado = parser.resultado
-            Log.d("RES", resultado)
-            texto.setText(resultado)
+            val intent = Intent(this, ResultadoActivity::class.java)
+            intent.putExtra("recibir", resultado)
+            startActivity(intent)
         }
     }
 }
